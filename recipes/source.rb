@@ -22,6 +22,14 @@
 #
 
 
+# this does not get created until it's needed by chef-internals, but we're going to use it to download
+# nginx source tarballs.
+directory "#{Chef::Config['file_cache_path']}" do
+  owner "root"
+  group "root"
+  mode "0755"
+end
+
 nginx_url = node['nginx']['source']['url'] ||
   "http://nginx.org/download/nginx-#{node['nginx']['version']}.tar.gz"
 
@@ -45,7 +53,7 @@ include_recipe "build-essential"
 
 src_filepath  = "#{Chef::Config['file_cache_path'] || '/tmp'}/nginx-#{node['nginx']['version']}.tar.gz"
 packages = value_for_platform(
-    ["centos","redhat","fedora"] => {'default' => ['pcre-devel', 'openssl-devel']},
+    ["amazon","centos","redhat","fedora"] => {'default' => ['pcre-devel', 'openssl-devel']},
     "default" => ['libpcre3', 'libpcre3-dev', 'libssl-dev']
   )
 
@@ -53,7 +61,7 @@ packages.each do |devpkg|
   package devpkg
 end
 
-remote_file nginx_url do
+remote_file src_filepath do
   source nginx_url
   checksum node['nginx']['source']['checksum']
   path src_filepath
@@ -65,6 +73,8 @@ user node['nginx']['user'] do
   shell "/bin/false"
   home "/var/www"
 end
+
+include_recipe 'nginx::skel'
 
 node.run_state['nginx_force_recompile'] = false
 node.run_state['nginx_configure_flags'] = 
