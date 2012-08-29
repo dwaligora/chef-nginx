@@ -19,6 +19,8 @@
 # limitations under the License.
 #
 
+package "pam-devel"
+
 apm_src_filename = ::File.basename(node['nginx']['http_auth_pam']['url'])
 apm_src_filepath = "#{Chef::Config['file_cache_path']}/#{apm_src_filename}"
 apm_extract_path = "#{Chef::Config['file_cache_path']}/nginx_http_auth_pam/#{node['nginx']['http_auth_pam']['checksum']}"

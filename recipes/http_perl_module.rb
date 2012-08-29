@@ -19,5 +19,17 @@
 # limitations under the License.
 #
 
+packages = case node["platform"]
+            when "amazon","centos","redhat","fedora"
+              [ 'perl-devel', 'mod_perl', 'mod_perl-devel']
+            else
+              # don't know apt packages, sorry
+              [ ]
+            end
+
+packages.each do |devpkg|
+  package devpkg
+end
+
 node.run_state['nginx_configure_flags'] =
   node.run_state['nginx_configure_flags'] | ["--with-http_perl_module"]
