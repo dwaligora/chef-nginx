@@ -19,18 +19,7 @@
 # limitations under the License.
 #
 
-contrib_modules_path = "#{Chef::Config['file_cache_path']}/contrib_modules"
-
-define :nginx_contrib_module_configure do
-  # we want to pull out the subdir path from the tarball.  This is always the first entry in the
-  # tar file.  We pull it off the top of the listing and chop off the trailing / and \n
-  module_src_subdir = `tar tf #{params[:tarball_path]} 2>/dev/null | head -1`.chop.chomp('/')
-  module_src_path = "#{contrib_modules_path}/#{module_src_subdir}"
-
-  node.run_state['nginx_configure_flags'] << "--add-module=#{module_src_path}"
-end
-
-define :nginx_contrib_module, :packages => [], :checksum => '' do
+define :nginx_contrib_module, :url => '', :packages => [], :checksum => nil do
 
   # install any packages required for this module
   params[:packages].each do |pkg|
@@ -39,10 +28,9 @@ define :nginx_contrib_module, :packages => [], :checksum => '' do
 
   # we are going to download the module tarball directly into our chef file cache
   tarball_path = "#{Chef::Config['file_cache_path']}/#{params[:name]}.tgz"
+  src_parent = "#{Chef::Config['file_cache_path']}/#{params[:name]}_src"
 
-  # just for some better organization, we extract all of our module source code
-  # into a common "contrib_modules" subdirectory in our file cache
-  directory contrib_modules_path do
+  directory src_parent do
     recursive true
   end
 
@@ -54,11 +42,8 @@ define :nginx_contrib_module, :packages => [], :checksum => '' do
 
   # extract the source tarball
   bash "extract #{params[:name]} module" do
-    code "tar xzf #{tarball_path} -C #{contrib_modules_path}"
+    code "tar xzf #{tarball_path} -C #{src_parent}"
   end
 
-  # add our --add-module configuration to nginx source run_state
-  nginx_contrib_module_configure do
-    tarball_path tarball_path
-  end
+  node.run_state['nginx_configure_flags'] << "--add-module=#{src_parent}/*"
 end
