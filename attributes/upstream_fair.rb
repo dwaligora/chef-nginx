@@ -20,4 +20,4 @@
 #
 
 default['nginx']['upstream_fair']['url']      = "http://github.com/gnosek/nginx-upstream-fair/tarball/master"
-default['nginx']['upstream_fair']['checksum'] = "ac5e7f485476af70e0ee1c52016cddaf"
+default['nginx']['upstream_fair']['checksum'] = "0306f503f6052abbe5da9a6936b595bedcd5ef1b7a89a694ae8e2212cbb794a5"

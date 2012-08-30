@@ -29,6 +29,13 @@ directory node['nginx']['log_dir'] do
   action :create
 end
 
+directory node['nginx']['tmp_dir'] do
+  recursive true
+  mode 0755
+  owner node['nginx']['user']
+  action :create
+end
+
 %w(sites-available sites-enabled conf.d).each do |leaf|
   directory File.join(node['nginx']['dir'], leaf) do
     owner "root"

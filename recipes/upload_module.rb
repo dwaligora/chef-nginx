@@ -19,29 +19,7 @@
 # limitations under the License.
 #
 
-uplm_src_filename = ::File.basename(node['nginx']['upload']['url'])
-uplm_src_filepath = "#{Chef::Config['file_cache_path']}/#{uplm_src_filename}"
-uplm_extract_path = "#{Chef::Config['file_cache_path']}/nginx_upload_module/#{node['nginx']['upload']['checksum']}"
-
-remote_file uplm_src_filepath do
-  source node['nginx']['upload']['url']
-  checksum node['nginx']['upload']['checksum']
-  owner "root"
-  group "root"
-  mode 0644
+nginx_contrib_module "upload_module" do
+  url       node['nginx']['upload']['url']
+  checksum  node['nginx']['upload']['checksum']
 end
-
-bash "extract_upload_module" do
-  cwd ::File.dirname(uplm_src_filepath)
-  code <<-EOH
-    mkdir -p #{uplm_extract_path}
-    tar xzf #{uplm_src_filename} -C #{uplm_extract_path}
-    mv #{uplm_extract_path}/*/* #{uplm_extract_path}/
-  EOH
-
-  not_if { ::File.exists?(uplm_extract_path) }
-end
-
-node.run_state['nginx_configure_flags'] =
-  node.run_state['nginx_configure_flags'] | ["--add-module=#{uplm_extract_path}"]
-  

@@ -19,29 +19,7 @@
 # limitations under the License.
 #
 
-modz_src_filename = ::File.basename(node['nginx']['mod_zip']['url'])
-modz_src_filepath = "#{Chef::Config['file_cache_path']}/#{modz_src_filename}"
-modz_extract_path = "#{Chef::Config['file_cache_path']}/nginx_mod_zip_module/#{node['nginx']['mod_zip']['checksum']}"
-
-remote_file modz_src_filepath do
-  source node['nginx']['mod_zip']['url']
-  checksum node['nginx']['mod_zip']['checksum']
-  owner "root"
-  group "root"
-  mode 0644
+nginx_contrib_module "mod_zip" do
+  url       node['nginx']['mod_zip']['url']
+  checksum  node['nginx']['mod_zip']['checksum']
 end
-
-bash "extract_mod_zip_module" do
-  cwd ::File.dirname(modz_src_filepath)
-  code <<-EOH
-    mkdir -p #{modz_extract_path}
-    tar xzf #{modz_src_filename} -C #{modz_extract_path}
-    mv #{modz_extract_path}/*/* #{modz_extract_path}/
-  EOH
-
-  not_if { ::File.exists?(modz_extract_path) }
-end
-
-node.run_state['nginx_configure_flags'] =
-  node.run_state['nginx_configure_flags'] | ["--add-module=#{modz_extract_path}"]
-  

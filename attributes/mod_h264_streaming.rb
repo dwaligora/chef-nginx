@@ -20,4 +20,4 @@
 #
 
 default['nginx']['mod_h264_streaming']['url']      = "http://h264.code-shop.com/download/nginx_mod_h264_streaming-2.2.7.tar.gz"
-default['nginx']['mod_h264_streaming']['checksum'] = "c7eda1cd66b0ee8b713ec828ee6a7894"
+default['nginx']['mod_h264_streaming']['checksum'] = "6d974ba630cef59de1f60996c66b401264a345d25988a76037c2856cec756c19"

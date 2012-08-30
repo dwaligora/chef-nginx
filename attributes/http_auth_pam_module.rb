@@ -20,4 +20,4 @@
 #
 
 default['nginx']['http_auth_pam']['url']      = "http://web.iti.upv.es/~sto/nginx/ngx_http_auth_pam_module-1.2.tar.gz"
-default['nginx']['http_auth_pam']['checksum'] = "3f6322663c6479a7b6b974bfa7417e5c"
+default['nginx']['http_auth_pam']['checksum'] = "5a85970ba61a99f55a26d2536a11d512b39bbd622f5737d25a9a8c10db81efa9"

@@ -19,31 +19,8 @@
 # limitations under the License.
 #
 
-package "pam-devel"
-
-apm_src_filename = ::File.basename(node['nginx']['http_auth_pam']['url'])
-apm_src_filepath = "#{Chef::Config['file_cache_path']}/#{apm_src_filename}"
-apm_extract_path = "#{Chef::Config['file_cache_path']}/nginx_http_auth_pam/#{node['nginx']['http_auth_pam']['checksum']}"
-
-remote_file apm_src_filepath do
-  source node['nginx']['http_auth_pam']['url']
-  checksum node['nginx']['http_auth_pam']['checksum']
-  owner "root"
-  group "root"
-  mode 0644
+nginx_contrib_module "http_auth_pam" do
+  url       node['nginx']['http_auth_pam']['url']
+  checksum  node['nginx']['http_auth_pam']['checksum']
+  packages [ "pam-devel" ]
 end
-
-bash "extract_http_auth_pam" do
-  cwd ::File.dirname(apm_src_filepath)
-  code <<-EOH
-    mkdir -p #{apm_extract_path}
-    tar xzf #{apm_src_filename} -C #{apm_extract_path}
-    mv #{apm_extract_path}/*/* #{apm_extract_path}/
-  EOH
-
-  not_if { ::File.exists?(apm_extract_path) }
-end
-
-node.run_state['nginx_configure_flags'] =
-  node.run_state['nginx_configure_flags'] | ["--add-module=#{apm_extract_path}"]
-  

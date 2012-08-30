@@ -19,29 +19,7 @@
 # limitations under the License.
 #
 
-upsf_src_filename = ::File.basename(node['nginx']['upstream_fair']['url'])
-upsf_src_filepath = "#{Chef::Config['file_cache_path']}/#{upsf_src_filename}"
-upsf_extract_path = "#{Chef::Config['file_cache_path']}/nginx_upstream_fair_module/#{node['nginx']['upstream_fair']['checksum']}"
-
-remote_file upsf_src_filepath do
-  source node['nginx']['upstream_fair']['url']
-  checksum node['nginx']['upstream_fair']['checksum']
-  owner "root"
-  group "root"
-  mode 0644
+nginx_contrib_module "upstream_fair_module" do
+  url       node['nginx']['upstream_fair']['url']
+  checksum  node['nginx']['upstream_fair']['checksum']
 end
-
-bash "extract_upstream_fair_module" do
-  cwd ::File.dirname(upsf_src_filepath)
-  code <<-EOH
-    mkdir -p #{upsf_extract_path}
-    tar xzf #{upsf_src_filename} -C #{upsf_extract_path}
-    mv #{upsf_extract_path}/*/* #{upsf_extract_path}/
-  EOH
-
-  not_if { ::File.exists?(upsf_extract_path) }
-end
-
-node.run_state['nginx_configure_flags'] =
-  node.run_state['nginx_configure_flags'] | ["--add-module=#{upsf_extract_path}"]
-  

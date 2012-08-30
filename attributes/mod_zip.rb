@@ -20,4 +20,4 @@
 #
 
 default['nginx']['mod_zip']['url']      = "https://github.com/evanmiller/mod_zip/tarball/master"
-default['nginx']['mod_zip']['checksum'] = "6b0b562ec16142761881e69f96668d26"
+default['nginx']['mod_zip']['checksum'] = "ae5025c6aaf87e2187f7b8d95f1a5128ae0b06183ab21605ab9f0a103cc2cfca"

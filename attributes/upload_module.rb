@@ -20,4 +20,4 @@
 #
 
 default['nginx']['upload']['url']      = "http://www.grid.net.ru/nginx/download/nginx_upload_module-2.2.0.tar.gz"
-default['nginx']['upload']['checksum'] = "2681a6167551830a23336fa41bc539a1"
+default['nginx']['upload']['checksum'] = "b1c26abe0427180602e257627b4ed21848c93cc20cefc33af084983767d65805"

@@ -20,4 +20,4 @@
 #
 
 default['nginx']['mod_strip']['url']      = "http://wiki.nginx.org/images/6/63/Mod_strip-0.1.tar.gz"
-default['nginx']['mod_strip']['checksum'] = "2439791d3816cd482df26c53317bda41"
+default['nginx']['mod_strip']['checksum'] = "e98813b2e91cbbe7e4b6d01040ab4d7c662853f9692cbbbb36a7c4b3657f0191"

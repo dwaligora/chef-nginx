@@ -19,29 +19,7 @@
 # limitations under the License.
 #
 
-mh264_src_filename = ::File.basename(node['nginx']['mod_h264_streaming']['url'])
-mh264_src_filepath = "#{Chef::Config['file_cache_path']}/#{mh264_src_filename}"
-mh264_extract_path = "#{Chef::Config['file_cache_path']}/nginx_mod_h264_streaming_module/#{node['nginx']['mod_h264_streaming']['checksum']}"
-
-remote_file mh264_src_filepath do
-  source node['nginx']['mod_h264_streaming']['url']
-  checksum node['nginx']['mod_h264_streaming']['checksum']
-  owner "root"
-  group "root"
-  mode 0644
+nginx_contrib_module "mod_h264_streaming" do
+  url       node['nginx']['mod_h264_streaming']['url']
+  checksum  node['nginx']['mod_h264_streaming']['checksum']
 end
-
-bash "extract_mod_h264_streaming_module" do
-  cwd ::File.dirname(mh264_src_filepath)
-  code <<-EOH
-    mkdir -p #{mh264_extract_path}
-    tar xzf #{mh264_src_filename} -C #{mh264_extract_path}
-    mv #{mh264_extract_path}/*/* #{mh264_extract_path}/
-  EOH
-
-  not_if { ::File.exists?(mh264_extract_path) }
-end
-
-node.run_state['nginx_configure_flags'] =
-  node.run_state['nginx_configure_flags'] | ["--add-module=#{mh264_extract_path}"]
-  
