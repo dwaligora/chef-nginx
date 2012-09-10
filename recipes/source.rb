@@ -173,6 +173,11 @@ else
     group "root"
     mode "0644"
   end
+
+  service "nginx" do
+    supports :status => true, :restart => true, :reload => true
+    action :enable
+  end
 end
 
 %w{nxensite nxdissite}.each do |nxscript|
