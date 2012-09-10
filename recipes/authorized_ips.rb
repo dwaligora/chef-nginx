@@ -37,5 +37,5 @@ template "authorized_ip" do
     :authorized_ips => node['nginx']['authorized_ips']
   )
 
-  notifies :reload, resources(:service => "nginx")
+  notifies :reload, resources(:service => "nginx"), :delayed
 end
