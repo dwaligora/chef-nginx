@@ -53,7 +53,7 @@ include_recipe "build-essential"
 
 src_filepath  = "#{Chef::Config['file_cache_path'] || '/tmp'}/nginx-#{node['nginx']['version']}.tar.gz"
 packages = value_for_platform(
-    ["amazon","centos","redhat","fedora"] => {'default' => ['pcre-devel', 'openssl-devel', 'libtool']},
+    ["amazon","centos","redhat","fedora"] => {'default' => ['pcre-devel', 'openssl-devel']},
     "default" => ['libpcre3', 'libpcre3-dev', 'libssl-dev']
   )
 
@@ -197,4 +197,8 @@ cookbook_file "#{node['nginx']['dir']}/mime.types" do
   group "root"
   mode "0644"
   notifies :reload, 'service[nginx]', :immediately
+end
+
+service "nginx" do
+  action :start
 end
